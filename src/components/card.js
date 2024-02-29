@@ -3,7 +3,11 @@ function deleteCard(event) {
   event.target.closest(".card").remove();
   console.log(event.target);
 }
-
+// лайк карточки
+function likeBtnHandler(e) {
+  e.target.classList.toggle("card__like-button_is-active");
+  console.log("лайк поставлен");
+}
 // создание карточки
 const createCard = function (
   cardData,
@@ -27,4 +31,4 @@ const createCard = function (
   return cardElement;
 };
 
-export { deleteCard, createCard };
+export { deleteCard, createCard,likeBtnHandler};
