@@ -1,7 +1,7 @@
 // обработчик закрытия на esc
 function escapeHandler(e) {
   if (e.key === "Escape") {
-    const openedPopup = document.querySelector(".popup_is-opened")
+    const openedPopup = document.querySelector(".popup_is-opened");
     closeModal(openedPopup);
   }
   return;
@@ -15,14 +15,16 @@ function closeModal(modal) {
 function openModal(modal) {
   modal.classList.add("popup_is-opened");
   document.addEventListener("keydown", escapeHandler);
-  const closeBtn = modal.querySelector(".popup__close");
-  modal.addEventListener("click", function (e) {
-    console.log(e.target)
-    if (e.target === closeBtn || e.target === modal) {
-      closeModal(modal);
-    }
-  });
+}
+// обработчик клика по оверлею и кнопке закрытия
+
+function overlayAndBtnHandler(e) {
+  if (
+    e.target.classList.contains("popup") ||
+    e.target.classList.contains("popup__close")
+  ) {
+    closeModal(e.currentTarget);
+  }
 }
 
-
-export { closeModal, openModal };
+export { closeModal, openModal, overlayAndBtnHandler };

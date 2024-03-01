@@ -2,7 +2,7 @@
 import "../pages/index.css";
 import { initialCards } from "./cards.js";
 import { deleteCard, createCard, likeBtnHandler } from "./card.js";
-import { closeModal, openModal } from "./modals.js";
+import { closeModal, openModal, overlayAndBtnHandler } from "./modals.js";
 //элементы
 
 const cardList = document.querySelector(".places__list"); // место вставки карточек
@@ -25,13 +25,14 @@ const profileDescription = document.querySelector(".profile__description"); // �
 for (let elem of initialCards) {
   cardList.append(createCard(elem, deleteCard, likeBtnHandler, imageHandler));
 }
-// анимирование открытия всех модалок
+// анимирование открытия всех модалок, навешивание слушателя закрытия по оверлею и кнопке
 for (let popup of allPopups) {
   popup.classList.add("popup_is-animated");
- 
+  popup.addEventListener("click", overlayAndBtnHandler);
 }
-// обработчики
 
+// обработчики
+// обработчик клика по оверлею
 // клика по картинке
 function imageHandler(e) {
   modalImage.alt = e.target.alt;

@@ -31,4 +31,4 @@ const createCard = function (
   return cardElement;
 };
 
-export { deleteCard, createCard,likeBtnHandler};
+export { deleteCard, createCard, likeBtnHandler };
