@@ -7,11 +7,31 @@
   line-height: 18px;
   box-sizing: border-box;
   padding: 10px 0 0;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
+  /* position: relative; */
 }
 
 .popup__input:last-of-type {
   margin-bottom: 0;
+  padding-top: 0;
+}
+
+.popup__input + span {
+  display: block;
+  height: 13px;
+  width: 100%;
+  padding-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popup__input_type_error {
+  border-bottom: 1px solid rgba(255, 0, 0, 1);
+}
+.popup__error_visible {
+  color: rgba(255, 0, 0, 1);
+  font-size: 12px;
 }
 
 @media screen and (max-width: 568px) {

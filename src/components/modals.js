@@ -16,6 +16,7 @@ function openModal(modal) {
   modal.classList.add("popup_is-opened");
   document.addEventListener("keydown", escapeHandler);
 }
+
 // обработчик клика по оверлею и кнопке закрытия
 
 function overlayAndBtnHandler(e) {
