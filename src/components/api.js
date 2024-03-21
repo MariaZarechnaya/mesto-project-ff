@@ -1,6 +1,12 @@
 const config = {
+  groupId: "wff-cohort-9",
+  url: "https://mesto.nomoreparties.co",
   token: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
   headerGet: { authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b" },
+  headers: {
+    authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
+    "Content-Type": "application/json",
+  },
   delete: {
     method: "DELETE",
     headers: {
@@ -14,62 +20,61 @@ const config = {
       "Content-Type": "application/json",
     },
   },
-  headerGet: { authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b" },
 };
 
 // общий серверный запрос
-const groupId = "wff-cohort-9";
-const url = "https://mesto.nomoreparties.co";
 
 //общий запрос
 function serverRequest(url, options) {
   return fetch(url, options).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return checkResponse(res);
   });
 }
 
+// проверка корректности ответа
+function checkResponse(response) {
+  if (response.ok) {
+    console.log(response.status);
+    return response.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
 // ф отправки  своей новой карточки на сервер
 function sendNewCardRequest(obj) {
-  return fetch(`${url}/v1/${groupId}/cards`, {
+  return fetch(`${config.url}/v1/${config.groupId}/cards`, {
     method: "POST",
-    headers: {
-      authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
-      "Content-Type": "application/json",
-    },
+    headers: config.headers,
     body: JSON.stringify({ name: obj.name, link: obj.link }),
-  });
+  }).then((res) => checkResponse(res));
 }
 
 // запрос удаления карточки
 function deleteCardRequest(cardId) {
-  fetch(`${url}/v1/${groupId}/cards/${cardId}`, config.delete);
+  return fetch(
+    `${config.url}/v1/${config.groupId}/cards/${cardId}`,
+    config.delete
+  ).then((res) => checkResponse(res));
 }
 // запрос удаления лайка
 function deleteLikeRequest(cardData) {
   return fetch(
-    `${url}/v1/${groupId}/cards/likes/${cardData._id}`,
+    `${config.url}/v1/${config.groupId}/cards/likes/${cardData._id}`,
     config.delete
-  );
+  ).then((res) => checkResponse(res));
 }
 // постановка лайка
 function sendLikeRequest(cardData) {
   return fetch(
-    `${url}/v1/${groupId}/cards/likes/${cardData._id}`,
+    `${config.url}/v1/${config.groupId}/cards/likes/${cardData._id}`,
     config.putLikes
-  );
+  ).then((res) => checkResponse(res));
 }
 
 // отправка информации о пользователе
 function sendProfileInfo(name, about) {
-  return serverRequest(`${url}/v1/${groupId}/users/me`, {
+  return serverRequest(`${config.url}/v1/${config.groupId}/users/me`, {
     method: "PATCH",
-    headers: {
-      authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
-      "Content-Type": "application/json",
-    },
+    headers: config.headers,
     body: JSON.stringify({
       name: name,
       about: about,
@@ -78,27 +83,27 @@ function sendProfileInfo(name, about) {
 }
 // отправка новой аватарки
 function sendNewAvatar(link) {
-  return serverRequest(`${url}/v1/${groupId}/users/me/avatar`, {
+  return serverRequest(`${config.url}/v1/${config.groupId}/users/me/avatar`, {
     method: "PATCH",
-    headers: {
-      authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
-      "Content-Type": "application/json",
-    },
+    headers: config.headers,
     body: JSON.stringify({
       avatar: link,
     }),
   });
 }
 // запрос данных профайла и карточек
-const cardsPromise = serverRequest(`${url}/v1/${groupId}/cards`, {
+const cardsPromise = serverRequest(`${config.url}/v1/${config.groupId}/cards`, {
   headers: config.headerGet,
 });
-const profilePromise = serverRequest(`${url}/v1/${groupId}/users/me`, {
-  headers: config.headerGet,
-});
+const profilePromise = serverRequest(
+  `${config.url}/v1/${config.groupId}/users/me`,
+  {
+    headers: config.headerGet,
+  }
+);
 //ждем ответов
 function awaitResponse() {
-  return Promise.all([profilePromise, cardsPromise]); 
+  return Promise.all([profilePromise, cardsPromise]);
 }
 
 export {
@@ -110,4 +115,5 @@ export {
   sendProfileInfo,
   sendNewAvatar,
   awaitResponse,
+  checkResponse,
 };

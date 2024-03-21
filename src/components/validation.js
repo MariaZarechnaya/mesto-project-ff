@@ -51,28 +51,38 @@ function disabledButton(inputList, button, className) {
 }
 // проверка если хоть одно поле не валидно
 function hasInvalidInput(inputList) {
-  for (let elem of inputList) {
-    if (!elem.validity.valid) {
-      return true;
-    }
-    return false;
-  }
+  return inputList.some((inputElement) => {
+    return !inputElement.validity.valid;
+  });
 }
 // очистка валидации
-function clearValidation(form) {
+function clearValidation(form, options) {
+  form.reset();
   const inputList = Array.from(form.querySelectorAll(".popup__input"));
+  const button = form.querySelector(options.submitButtonSelector);
+  disabledButton(inputList, button, options.inactiveButtonClass);
   inputList.forEach((input) => {
-    // input.value=''
-    input.classList.remove("popup__input_type_error");
-    form.querySelector(`.${input.id}-error-message`).textContent = "";
-    form
-      .querySelector(`.${input.id}-error-message`)
-      .classList.remove("popup__error_visible");
+    hideInputError(
+      form.querySelector(`.${input.id}-error-message`),
+      input,
+      options.inputErrorClass,
+      options.errorClass
+    );
+  });
+}
+//
+// включение очистки валидации
+function turnOnValidationBeforeOpened(form) {
+  clearValidation(form, {
+    submitButtonSelector: ".popup__button",
+    inactiveButtonClass: "popup__button_disabled",
+    inputErrorClass: "popup__input_type_error",
+    errorClass: "popup__error_visible",
   });
 }
 
 // навешивание на все инпуты в форме
-function profileSetHandler(form, options) {
+function setValidationForAllInputs(form, options) {
   const inputList = Array.from(form.querySelectorAll(options.inputSelector));
   const button = form.querySelector(options.submitButtonSelector);
   disabledButton(inputList, button, options.inactiveButtonClass);
@@ -85,10 +95,11 @@ function profileSetHandler(form, options) {
 }
 
 // ф включения всех валидаций
-function enableValidation(forms, options) {
-  Array.from(forms).forEach((form) => {
-    profileSetHandler(form, options);
+function enableValidation(options) {
+  const forms = document.querySelectorAll(options.formSelector);
+  forms.forEach((form) => {
+    setValidationForAllInputs(form, options);
   });
 }
 
-export { enableValidation, clearValidation };
+export { enableValidation, clearValidation, turnOnValidationBeforeOpened };

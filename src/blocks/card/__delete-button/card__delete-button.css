@@ -17,7 +17,12 @@
   -o-transition: 0.3s;
   transition: 0.3s;
 }
-
+.card__delete-button_is_active {
+display: block;
+}
+.card__delete-button_is_disabled {
+display: none;
+}
 .card__delete-button:hover {
   opacity: 0.6;
 }
