@@ -57,8 +57,7 @@ function hasInvalidInput(inputList) {
 }
 // очистка валидации
 function clearValidation(form, options) {
-  form.reset();
-  const inputList = Array.from(form.querySelectorAll(".popup__input"));
+  const inputList = Array.from(form.querySelectorAll(options.inputSelector));
   const button = form.querySelector(options.submitButtonSelector);
   disabledButton(inputList, button, options.inactiveButtonClass);
   inputList.forEach((input) => {
@@ -72,13 +71,8 @@ function clearValidation(form, options) {
 }
 //
 // включение очистки валидации
-function turnOnValidationBeforeOpened(form) {
-  clearValidation(form, {
-    submitButtonSelector: ".popup__button",
-    inactiveButtonClass: "popup__button_disabled",
-    inputErrorClass: "popup__input_type_error",
-    errorClass: "popup__error_visible",
-  });
+function turnOnClearValidationBeforeOpened(form, options) {
+  clearValidation(form, options);
 }
 
 // навешивание на все инпуты в форме
@@ -102,4 +96,4 @@ function enableValidation(options) {
   });
 }
 
-export { enableValidation, clearValidation, turnOnValidationBeforeOpened };
+export { enableValidation, clearValidation, turnOnClearValidationBeforeOpened };

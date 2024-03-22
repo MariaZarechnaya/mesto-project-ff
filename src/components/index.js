@@ -4,8 +4,7 @@ import { deleteCard, createCard, likeBtnHandler } from "./card.js";
 import { closeModal, openModal, overlayAndBtnHandler } from "./modals.js";
 import {
   enableValidation,
-  clearValidation,
-  turnOnValidationBeforeOpened,
+  turnOnClearValidationBeforeOpened,
 } from "./validation.js";
 
 import {
@@ -16,7 +15,6 @@ import {
   sendProfileInfo,
   sendNewAvatar,
   awaitResponse,
-  checkResponse,
 } from "./api.js";
 //элементы
 const profileAvatar = document.querySelector(".profile__image"); // аватарка
@@ -38,6 +36,14 @@ const profileDescInput = formEdit.description; // инпут описания
 const profileTitleElement = document.querySelector(".profile__title"); // элемент заголовка  профиля
 const profileDescription = document.querySelector(".profile__description"); // элемент описания  профиля
 
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 // анимирование открытия всех модалок, навешивание слушателя закрытия по оверлею и кнопке
 for (let popup of allPopups) {
   popup.classList.add("popup_is-animated");
@@ -150,6 +156,7 @@ function newAvatarSubmitHandler(e) {
     .then((resp) => {
       profileAvatar.style.backgroundImage = `url(${resp.avatar})`; // когда загрузилось меняем стили аватарки
       closeModal(avatarPopUp);
+      e.target.reset();
     })
     .catch((err) => {
       console.log(err);
@@ -160,7 +167,8 @@ function newAvatarSubmitHandler(e) {
 // добавление слушателей
 //  на кнопку +
 addModalButton.addEventListener("click", function () {
-  turnOnValidationBeforeOpened(formNewCard);
+  formNewCard.reset();
+  turnOnClearValidationBeforeOpened(formNewCard, validationConfig);
   openModal(newCardPopup);
 });
 // обработчик отправки формы для добавления нового места
@@ -168,7 +176,7 @@ formNewCard.addEventListener("submit", formSubmitPlace);
 // для кнопки 'редактировать'
 editBtn.addEventListener("click", function () {
   // устанавливаем значения
-  turnOnValidationBeforeOpened(formEdit);
+  turnOnClearValidationBeforeOpened(formEdit, validationConfig);
   profileNameInput.value = profileTitleElement.textContent;
   profileDescInput.value = profileDescription.textContent;
   openModal(editPopup);
@@ -177,18 +185,12 @@ editBtn.addEventListener("click", function () {
 formEdit.addEventListener("submit", editFormSubmitHandler);
 //клик по аватарке
 profileAvatar.addEventListener("click", function () {
-  turnOnValidationBeforeOpened(formNewAvatar);
+  formNewAvatar.reset();
+  turnOnClearValidationBeforeOpened(formNewAvatar, validationConfig);
   openModal(avatarPopUp);
 });
 // отправка формы новой аватарки
 formNewAvatar.addEventListener("submit", newAvatarSubmitHandler);
 
 // // валидация форм, вызов валидации всех  форм
-enableValidation({
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-});
+enableValidation(validationConfig);

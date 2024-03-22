@@ -5,14 +5,14 @@ function deleteCard(event) {
 function likeBtnHandler(e) {
   e.target.classList.toggle("card__like-button_is-active");
 }
+
 // если карточка не моя, то скроем кнопки удаления
-function isMyCard(owner, myId, cardElement) {
+function isMyCard(owner, myId, deleteBtn) {
   if (owner === myId) {
-    cardElement.disabled = false;
-    cardElement.classList.add("card__delete-button_is_active");
+    deleteBtn.disabled = false;
   } else {
-    cardElement.disabled = true;
-    cardElement.classList.add("card__delete-button_is_disabled");
+    deleteBtn.disabled = true;
+    deleteBtn.classList.add("card__delete-button_is_disabled");
   }
 }
 // создание карточки
@@ -41,21 +41,20 @@ const createCard = function (
     }
   }
   likeBtn.addEventListener("click", function (e) {
-    likeBtnCallback(e);
     // отправка лайка на сервер
     if (e.target.classList.contains("card__like-button_is-active")) {
-      sendLikeRequest(cardData)
-        .then((res) => {
-          likeNumberContainer.textContent = res.likes.length;
-        })
-        .catch((err) => console.log(err));
-      // удаление лайка с сервера
-    } else {
       deleteLikeRequest(cardData)
         .then((res) => {
           likeNumberContainer.textContent = res.likes.length;
+          likeBtnCallback(e);
         })
         .catch((err) => console.log(err));
+    } else {
+      //отправка
+      sendLikeRequest(cardData).then((res) => {
+        likeNumberContainer.textContent = res.likes.length;
+        likeBtnCallback(e);
+      });
     }
   });
 

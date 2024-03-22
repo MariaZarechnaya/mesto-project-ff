@@ -16,10 +16,9 @@
   -ms-transition: 0.3s;
   -o-transition: 0.3s;
   transition: 0.3s;
+  display: block;
 }
-.card__delete-button_is_active {
-display: block;
-}
+
 .card__delete-button_is_disabled {
 display: none;
 }

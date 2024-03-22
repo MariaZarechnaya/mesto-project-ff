@@ -7,19 +7,6 @@ const config = {
     authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
     "Content-Type": "application/json",
   },
-  delete: {
-    method: "DELETE",
-    headers: {
-      authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
-    },
-  },
-  putLikes: {
-    method: "PUT",
-    headers: {
-      authorization: "99b9a286-1183-4ca0-bcb1-f92e59405a3b",
-      "Content-Type": "application/json",
-    },
-  },
 };
 
 // общий серверный запрос
@@ -52,21 +39,30 @@ function sendNewCardRequest(obj) {
 function deleteCardRequest(cardId) {
   return fetch(
     `${config.url}/v1/${config.groupId}/cards/${cardId}`,
-    config.delete
+    {
+      method: "DELETE",
+      headers:config.headers,
+    }
   ).then((res) => checkResponse(res));
 }
 // запрос удаления лайка
 function deleteLikeRequest(cardData) {
   return fetch(
     `${config.url}/v1/${config.groupId}/cards/likes/${cardData._id}`,
-    config.delete
+    {
+      method: "DELETE",
+      headers:config.headers,
+    }
   ).then((res) => checkResponse(res));
 }
 // постановка лайка
 function sendLikeRequest(cardData) {
   return fetch(
     `${config.url}/v1/${config.groupId}/cards/likes/${cardData._id}`,
-    config.putLikes
+    {
+      method: "PUT",
+      headers:config.headers,
+    }
   ).then((res) => checkResponse(res));
 }
 
@@ -92,10 +88,10 @@ function sendNewAvatar(link) {
   });
 }
 // запрос данных профайла и карточек
-const cardsPromise = serverRequest(`${config.url}/v1/${config.groupId}/cards`, {
+const getCardsInfoPromise = serverRequest(`${config.url}/v1/${config.groupId}/cards`, {
   headers: config.headerGet,
 });
-const profilePromise = serverRequest(
+const getProfileInfoPromise = serverRequest(
   `${config.url}/v1/${config.groupId}/users/me`,
   {
     headers: config.headerGet,
@@ -103,7 +99,7 @@ const profilePromise = serverRequest(
 );
 //ждем ответов
 function awaitResponse() {
-  return Promise.all([profilePromise, cardsPromise]);
+  return Promise.all([getProfileInfoPromise, getCardsInfoPromise]);
 }
 
 export {
